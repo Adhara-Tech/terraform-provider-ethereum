@@ -1,5 +1,11 @@
 package utils
 
+import (
+	"encoding/json"
+
+	"github.com/google/uuid"
+)
+
 type EncryptedKeyV3 struct {
 	Address string     `json:"address"`
 	Crypto  CryptoJSON `json:"crypto"`
@@ -18,4 +24,17 @@ type CryptoJSON struct {
 
 type CipherparamsJSON struct {
 	IV string `json:"iv"`
+}
+
+func (c *EncryptedKeyV3) ToString() string {
+	j, _ := json.Marshal(c)
+	return string(j)
+}
+
+func (c *EncryptedKeyV3) Generate(crypto CryptoJSON, publicAddress string) {
+	uuid := uuid.New()
+	c.Address = publicAddress
+	c.Crypto = crypto
+	c.Id = uuid.String()
+	c.Version = 3
 }

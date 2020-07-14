@@ -11,7 +11,6 @@ import (
 	"strings"
 
 	"github.com/Adhara-Tech/terraform-provider-ethereum/utils"
-	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -107,24 +106,14 @@ func CreateAccount(d *schema.ResourceData, meta interface{}) error {
 
 	privateKey := hex.EncodeToString(k.D.Bytes())
 	publicAddress := hex.EncodeToString(utils.PublicKeyToAddress(k.PublicKey))
-	uuid := uuid.New()
 
-	keystoreJSONV3 := utils.EncryptedKeyV3{
-		Address: publicAddress,
-		Crypto:  crytoJSON,
-		Id:      uuid.String(),
-		Version: 3,
-	}
-
-	encryptedJSON, err := json.Marshal(keystoreJSONV3)
-	if err != nil {
-		return fmt.Errorf("error parsing EncryptedKeyV3 json")
-	}
+	var keystore utils.EncryptedKeyV3
+	keystore.Generate(crytoJSON, publicAddress)
 
 	d.SetId(publicAddress)
 	d.Set("private_key", privateKey)
 	d.Set("public_address", publicAddress)
-	d.Set("encrypted_json", string(encryptedJSON))
+	d.Set("encrypted_json", keystore.ToString())
 
 	return nil
 }
@@ -222,26 +211,16 @@ func populateAccountFromImport(d *schema.ResourceData, k *ecdsa.PrivateKey, pass
 
 	privateKey := hex.EncodeToString(k.D.Bytes())
 	publicAddress := hex.EncodeToString(utils.PublicKeyToAddress(k.PublicKey))
-	uuid := uuid.New()
 
-	keystoreJSONV3 := utils.EncryptedKeyV3{
-		Address: publicAddress,
-		Crypto:  crytoJSON,
-		Id:      uuid.String(),
-		Version: 3,
-	}
-
-	encryptedJSON, err := json.Marshal(keystoreJSONV3)
-	if err != nil {
-		return fmt.Errorf("error parsing EncryptedKeyV3 json")
-	}
+	var keystore utils.EncryptedKeyV3
+	keystore.Generate(crytoJSON, publicAddress)
 
 	d.SetId(publicAddress)
 	d.Set("scrypt_encryption", "lightkdf")
 	d.Set("passphrase", passphrase)
 	d.Set("private_key", privateKey)
 	d.Set("public_address", publicAddress)
-	d.Set("encrypted_json", string(encryptedJSON))
+	d.Set("encrypted_json", keystore.ToString())
 
 	return nil
 }
