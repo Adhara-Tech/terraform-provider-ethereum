@@ -20,14 +20,17 @@ const (
 	scryptDKLen  = 32
 )
 
-func Keccak256(data ...[]byte) []byte {
+func Keccak256(data ...[]byte) ([]byte, error) {
 	var b []byte
 	d := sha3.NewLegacyKeccak256()
 	for _, b := range data {
-		d.Write(b)
+		_, err := d.Write(b)
+		if err != nil {
+			return nil, err
+		}
 	}
 	b = d.Sum(b)
-	return b
+	return b, nil
 }
 
 func AES128(key, inText, iv []byte) ([]byte, error) {
@@ -43,7 +46,8 @@ func AES128(key, inText, iv []byte) ([]byte, error) {
 
 func PublicKeyToAddress(p ecdsa.PublicKey) []byte {
 	k := elliptic.Marshal(elliptic.P256(), p.X, p.Y)
-	return Keccak256(k[1:])[12:]
+	khash, _ := Keccak256(k[1:])
+	return khash[12:]
 }
 
 func EncryptJSONV3(data, auth []byte, scryptN, scryptP int) (CryptoJSON, error) {
@@ -69,7 +73,10 @@ func EncryptJSONV3(data, auth []byte, scryptN, scryptP int) (CryptoJSON, error) 
 		return CryptoJSON{}, fmt.Errorf("aes encryption fail: %s", err.Error())
 	}
 
-	mac := Keccak256(derivedKey[16:32], cipherText)
+	mac, err := Keccak256(derivedKey[16:32], cipherText)
+	if err != nil {
+		return CryptoJSON{}, fmt.Errorf("error hashing mac: %s", err.Error())
+	}
 
 	scryptParamsJSON := make(map[string]interface{}, 5)
 	scryptParamsJSON["n"] = scryptN

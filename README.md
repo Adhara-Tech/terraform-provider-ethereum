@@ -21,7 +21,7 @@ resource "ethereum_keystore_account" "key_test_passphrase" {
 ```
 4. Execute `terraform plan` and `terraform apply`
 
-## Importing Keys
+## Importing accounts
 
 You can import existing ethereum accounts with the private key and it's passphrase.
 

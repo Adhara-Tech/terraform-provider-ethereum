@@ -1,0 +1,13 @@
+bin/
+_artifacts/
+tmp
+
+.cache
+.gocache
+
+.idea
+.vscode
+
+node_modules/
+
+release_message.txt
