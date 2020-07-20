@@ -21,6 +21,7 @@ For each changelong entry sections are:
 ### Fixed
 1. Passphrase parametes was in plain text. Update with sensitive=true.
 2. Fix issue with passphrase when importing a key
+3. compile statically to fix issues with alpine images
 
 ## [0.0.1-rc1] - 2020/07/20
 First release candidate of terraform-provider-ethereum

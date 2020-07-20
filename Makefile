@@ -18,7 +18,7 @@ define compile
 	$(eval os = $1)
 	$(eval extension = $2)
 	@echo "building $(os) binary"
-	GOOS=$(os) GOARCH=amd64 go build -o bin/$(ARTIFACT_NAME)_$(os)_amd64$(extension)
+	CGO_ENABLED=0 GOOS=$(os) GOARCH=amd64 go build -o bin/$(ARTIFACT_NAME)_$(os)_amd64$(extension)
 endef
 
 .PHONY: build

@@ -37,7 +37,7 @@ resource "ethereum_keystore_account" "key_you_want_import" {
 
 ### What if you don't have the private key ?
 
-You can use a small tool inside scripts folder to get your private key from a kestore JSON account.
+You can use a small tool inside scripts folder ([scripts/private_key.go](./scripts/private_key.go)) to get your private key from a kestore JSON account.
 
 ```bash
 go run private_key.go <path-to-your-json-keystore> <passphrase>
