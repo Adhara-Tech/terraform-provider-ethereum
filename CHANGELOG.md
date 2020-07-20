@@ -13,8 +13,11 @@ For each changelong entry sections are:
 * `Fixed` for any bug fixes.
 * `Security` in case of vulnerabilities.
 
-
 ## [Unreleased]
+
+## [0.0.1-rc1] - 2020/07/20
+
+First release candidate of terraform-provider-ethereum
 
 ### Added
 
