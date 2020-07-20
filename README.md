@@ -4,8 +4,8 @@ Terraform provider to generate ethereum accounts. A simple provider that allows 
 
 ## Usage
 
-1. Build the provider `go build -o terraform-provider-ethereum`
-2. Copy the binary to `$HOME/.terraform.d/plugins`
+1. Build the provider `make build`
+2. Copy the binary from `bin` to `$HOME/.terraform.d/plugins`, remove the archOS sufix.
 3. Copy the following terraform code to a `main.tf` file.
 ```hcl
 provider "ethereum" {}
@@ -35,6 +35,15 @@ resource "ethereum_keystore_account" "key_you_want_import" {
 2. Execute `terraform import ethereum_keystore_account.key_you_want_import yourPrivateKey_yourPassphrase`
 3. You can also import a ethereum key with an empty passphrase. `terraform import ethereum_keystore_account.key_you_want_import yourPrivateKey_`, make sure to set the underscore after the private key.
 
+### What if you don't have the private key ?
+
+You can use a small tool inside scripts folder ([scripts/private_key.go](./scripts/private_key.go)) to get your private key from a kestore JSON account.
+
+```bash
+go run private_key.go <path-to-your-json-keystore> <passphrase>
+```
+The output is your private key. After this, you can follow the import instructions to import your key into terraform code.
+
 ## TODO
 
-* [] Implement tests
+* [ ] Implement tests

@@ -44,6 +44,7 @@ func resourceEthereumKeystore() *schema.Resource {
 			"passphrase": {
 				Type:        schema.TypeString,
 				Optional:    true,
+				Sensitive:   true,
 				Description: "passphrase to encrypt the ethereum account",
 				Default:     "",
 			},
@@ -169,7 +170,7 @@ func parseImportString(importStr string) (*ecdsa.PrivateKey, string, error) {
 	// example with passphrase -> ab4457b3ead76c5a7d1b947e7cbf805cbccdda3a5e72a9da02415b0055a5e06e_yourPassprase (passphrase can't contain _)
 	// example with empty passfrase -> ab4457b3ead76c5a7d1b947e7cbf805cbccdda3a5e72a9da02415b0055a5e06e_
 
-	importParts := strings.Split(strings.ToLower(importStr), "_")
+	importParts := strings.Split(importStr, "_")
 
 	if len(importParts) < 2 {
 		return nil, "", fmt.Errorf("to few import arguments")
