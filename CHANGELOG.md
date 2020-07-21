@@ -15,6 +15,8 @@ For each changelong entry sections are:
 
 ## [Unreleased]
 
+## [0.0.1-rc2] - 2020/07/21
+
 ### Added
 1. Decrypt script to get the private key from a keystore account
 
