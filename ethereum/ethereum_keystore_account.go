@@ -2,7 +2,6 @@ package ethereum
 
 import (
 	"crypto/ecdsa"
-	"crypto/elliptic"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -11,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/Adhara-Tech/terraform-provider-ethereum/utils"
+	"github.com/btcsuite/btcd/btcec"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -90,7 +90,7 @@ func CreateAccount(d *schema.ResourceData, meta interface{}) error {
 	scryptEncryption := d.Get("scrypt_encryption").(string)
 	passphrase := d.Get("passphrase").(string)
 
-	k, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	k, err := ecdsa.GenerateKey(btcec.S256(), rand.Reader)
 	if err != nil {
 		return fmt.Errorf("error generating ecdsa key: %s", err)
 	}
@@ -177,7 +177,7 @@ func parseImportString(importStr string) (*ecdsa.PrivateKey, string, error) {
 	}
 
 	k := new(ecdsa.PrivateKey)
-	k.PublicKey.Curve = elliptic.P256()
+	k.PublicKey.Curve = btcec.S256()
 
 	privateKey, err := hex.DecodeString(importParts[0])
 	if err != nil {

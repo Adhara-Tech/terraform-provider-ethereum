@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"io"
 
+	"github.com/btcsuite/btcd/btcec"
 	"golang.org/x/crypto/scrypt"
 	"golang.org/x/crypto/sha3"
 )
@@ -45,9 +46,9 @@ func AES128(key, inText, iv []byte) ([]byte, error) {
 }
 
 func PublicKeyToAddress(p ecdsa.PublicKey) []byte {
-	k := elliptic.Marshal(elliptic.P256(), p.X, p.Y)
-	khash, _ := Keccak256(k[1:])
-	return khash[12:]
+	k := elliptic.Marshal(btcec.S256(), p.X, p.Y)
+	hash, _ := Keccak256(k[1:])
+	return hash[12:]
 }
 
 func EncryptJSONV3(data, auth []byte, scryptN, scryptP int) (CryptoJSON, error) {
