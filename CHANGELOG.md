@@ -15,6 +15,8 @@ For each changelong entry sections are:
 
 ## [Unreleased]
 
+## [0.0.1-rc3] - 2020/07/30
+
 ### Changed
 2. change paremeter `public_address` to `address`
 
