@@ -15,6 +15,12 @@ For each changelong entry sections are:
 
 ## [Unreleased]
 
+### Changed
+2. change paremeter `public_address` to `address`
+
+### Fixed
+1. use the correct elliptic curve secp256k1
+
 ## [0.0.1-rc2] - 2020/07/21
 
 ### Added

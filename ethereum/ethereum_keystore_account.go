@@ -2,7 +2,6 @@ package ethereum
 
 import (
 	"crypto/ecdsa"
-	"crypto/elliptic"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -11,6 +10,7 @@ import (
 	"strings"
 
 	"github.com/Adhara-Tech/terraform-provider-ethereum/utils"
+	"github.com/btcsuite/btcd/btcec"
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 )
 
@@ -48,7 +48,7 @@ func resourceEthereumKeystore() *schema.Resource {
 				Description: "passphrase to encrypt the ethereum account",
 				Default:     "",
 			},
-			"public_address": {
+			"address": {
 				Type:     schema.TypeString,
 				Computed: true,
 			},
@@ -90,7 +90,7 @@ func CreateAccount(d *schema.ResourceData, meta interface{}) error {
 	scryptEncryption := d.Get("scrypt_encryption").(string)
 	passphrase := d.Get("passphrase").(string)
 
-	k, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	k, err := ecdsa.GenerateKey(btcec.S256(), rand.Reader)
 	if err != nil {
 		return fmt.Errorf("error generating ecdsa key: %s", err)
 	}
@@ -106,14 +106,14 @@ func CreateAccount(d *schema.ResourceData, meta interface{}) error {
 	}
 
 	privateKey := hex.EncodeToString(k.D.Bytes())
-	publicAddress := hex.EncodeToString(utils.PublicKeyToAddress(k.PublicKey))
+	address := hex.EncodeToString(utils.PublicKeyToAddress(k.PublicKey))
 
 	var keystore utils.EncryptedKeyV3
-	keystore.Generate(crytoJSON, publicAddress)
+	keystore.Generate(crytoJSON, address)
 
-	d.SetId(publicAddress)
+	d.SetId(address)
 	d.Set("private_key", privateKey)
-	d.Set("public_address", publicAddress)
+	d.Set("address", address)
 	d.Set("encrypted_json", keystore.ToString())
 
 	return nil
@@ -137,7 +137,7 @@ func UpdateAccount(d *schema.ResourceData, meta interface{}) error {
 	var keystoreJSONV3 utils.EncryptedKeyV3
 	err = json.Unmarshal([]byte(d.Get("encrypted_json").(string)), &keystoreJSONV3)
 	if err != nil {
-		return fmt.Errorf("error unmarshaling the encryptedKeyV3")
+		return fmt.Errorf("error unmarshaling encryptedKeyV3")
 	}
 
 	crytoJSON, err := utils.EncryptJSONV3(privateKeyBytes, []byte(passphrase), scriptN, scriptP)
@@ -177,7 +177,7 @@ func parseImportString(importStr string) (*ecdsa.PrivateKey, string, error) {
 	}
 
 	k := new(ecdsa.PrivateKey)
-	k.PublicKey.Curve = elliptic.P256()
+	k.PublicKey.Curve = btcec.S256()
 
 	privateKey, err := hex.DecodeString(importParts[0])
 	if err != nil {
@@ -211,16 +211,16 @@ func populateAccountFromImport(d *schema.ResourceData, k *ecdsa.PrivateKey, pass
 	}
 
 	privateKey := hex.EncodeToString(k.D.Bytes())
-	publicAddress := hex.EncodeToString(utils.PublicKeyToAddress(k.PublicKey))
+	address := hex.EncodeToString(utils.PublicKeyToAddress(k.PublicKey))
 
 	var keystore utils.EncryptedKeyV3
-	keystore.Generate(crytoJSON, publicAddress)
+	keystore.Generate(crytoJSON, address)
 
-	d.SetId(publicAddress)
+	d.SetId(address)
 	d.Set("scrypt_encryption", "lightkdf")
 	d.Set("passphrase", passphrase)
 	d.Set("private_key", privateKey)
-	d.Set("public_address", publicAddress)
+	d.Set("address", address)
 	d.Set("encrypted_json", keystore.ToString())
 
 	return nil
