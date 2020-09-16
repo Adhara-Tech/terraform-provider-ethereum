@@ -15,6 +15,10 @@ For each changelong entry sections are:
 
 ## [Unreleased]
 
+## [0.0.1] - 2020/09/16
+
+First stable version of terraform-ethereum-provider
+
 ## [0.0.1-rc3] - 2020/07/30
 
 ### Changed
