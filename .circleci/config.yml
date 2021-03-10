@@ -49,23 +49,6 @@ jobs:
           paths:
             - bin/*
 
-  publish:
-    executor: node
-    steps:
-      - checkout
-      - attach_workspace:
-          at: .
-      - run:
-          name: Install tools
-          command: |
-            sudo npm install -g changelog-parser
-            curl -sLO https://github.com/github/hub/releases/download/v2.14.2/hub-linux-amd64-2.14.2.tgz
-            tar -xvf hub-linux-amd64-2.14.2.tgz
-            sudo mv hub-linux-amd64-2.14.2/bin/hub /usr/local/bin/
-      - run:
-          name: publish
-          command: ./scripts/publish-release.sh $CIRCLE_TAG
-
 workflows:
   version: 2
   test:
@@ -78,16 +61,6 @@ workflows:
       - build:
           requires:
             - go-test
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only:
-                - /^v[0-9]\d*\.[0-9]\d*\.[0-9]\d*$/
-                - /^v[0-9]\d*\.[0-9]\d*\.[0-9]\d*-rc[0-9]\d*$/
-      - publish:
-          requires:
-            - build
           filters:
             branches:
               ignore: /.*/
