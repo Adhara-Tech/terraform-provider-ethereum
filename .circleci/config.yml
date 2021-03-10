@@ -85,13 +85,13 @@ workflows:
               only:
                 - /^v[0-9]\d*\.[0-9]\d*\.[0-9]\d*$/
                 - /^v[0-9]\d*\.[0-9]\d*\.[0-9]\d*-rc[0-9]\d*$/
-      - publish:
-          requires:
-            - build
-          filters:
-            branches:
-              ignore: /.*/
-            tags:
-              only:
-                - /^v[0-9]\d*\.[0-9]\d*\.[0-9]\d*$/
-                - /^v[0-9]\d*\.[0-9]\d*\.[0-9]\d*-rc[0-9]\d*$/
+      #- publish:
+      #    requires:
+      #      - build
+      #    filters:
+      #      branches:
+      #        ignore: /.*/
+      #      tags:
+      #        only:
+      #          - /^v[0-9]\d*\.[0-9]\d*\.[0-9]\d*$/
+      #          - /^v[0-9]\d*\.[0-9]\d*\.[0-9]\d*-rc[0-9]\d*$/
