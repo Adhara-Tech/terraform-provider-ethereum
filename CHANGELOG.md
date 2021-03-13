@@ -15,6 +15,10 @@ For each changelong entry sections are:
 
 ## [Unreleased]
 
+## [v0.0.2] - 2021/03/10
+
+Switch to github actions and goreleaser to be able to push to terrafrom registry
+
 ## [0.0.1] - 2020/09/16
 
 First stable version of terraform-ethereum-provider
